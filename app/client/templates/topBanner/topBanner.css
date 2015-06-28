@@ -1,0 +1,78 @@
+#topBanner {
+    background: url('/resources/images/logoInitials.png');
+    background-size: 100% 100%;
+}
+
+#menuWrapper {
+    position: absolute;
+    background: rgba(255, 0, 0, 0.3);
+    font-size: 300%;
+    text-align: center;
+    width: 91%;
+    height: 40%;
+    top: 30%;
+    left: 9%;
+}
+
+#logo {
+    width: 50%;
+    margin: 0;
+    padding: 0;
+}
+
+#menuItems {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 50%;
+}
+
+#menuItems li {
+    float: left;
+    width: 200px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+#profileToggle {
+    border: red solid 2px;
+    background: rgba(255, 0, 0, 0.3);
+    position: absolute;
+    text-align: center;
+    font-size: 125%;
+    width: 15%;
+    height: 15%;
+    bottom: 0;
+    right: 0;
+}
+
+#userInfoPrompt {
+    font-weight: bold;
+}
+
+#profile {
+    border: red solid 2px;
+    background: black;
+    color: white;
+    position: absolute;
+    display: none;
+    width: 15%;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+}
+
+#profile a {
+    color: white;
+}
+
+#profile * {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}

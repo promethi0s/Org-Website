@@ -1,0 +1,24 @@
+<template name="profileSignedOut">
+
+    <span id="userInfoPrompt"></span>
+
+    <form id="userInfo">
+        <span class="loginElement signupElement forgotElement">Username</span>
+        <input class="loginElement signupElement forgotElement" id="username" type="text" placeholder="Username">
+        <span class="signupElement">Moniker</span>
+        <input class="signupElement" id="moniker" type="text" placeholder="Moniker">
+        <span class="loginElement signupElement forgotElement">Password</span>
+        <input class="loginElement signupElement forgotElement" id="password" type="password" placeholder="Password">
+        <span class="signupElement">Confirm Password</span>
+        <input class="signupElement" id="passwordConfirm" type="password" placeholder="Confirm Password">
+        <span class="signupElement forgotElement">Email</span>
+        <input class="signupElement forgotElement" id="email" type="email" placeholder="Email">
+        <span class="signupElement">Confirm Email</span>
+        <input class="signupElement" id="emailConfirm" type="email" placeholder="Confirm Email">
+        <button class="loginElement signupElement forgotElement" type="submit">Submit</button>
+        <a class="signupElement forgotElement clickable" id="loginLink">Return to login.</a>
+        <a class="loginElement forgotElement clickable" id="signupLink">Need an account?</a>
+        <a class="loginElement signupElement clickable" id="forgotLink">Forgot your password?</a>
+    </form>
+
+</template>

@@ -1,0 +1,29 @@
+<template name="topBanner">
+
+    <div id="menuWrapper">
+        <div id="logo"><a href="{{pathFor 'home'}}">Vorpal Industries</a></div>
+        <ul id="menuItems">
+            <li><a href="{{pathFor 'forums'}}">Forums</a></li>
+            <li><a href="{{pathFor 'news'}}">News</a></li>
+            <li><a href="{{pathFor 'gaming'}}">Gaming</a></li>
+            <li><a href="{{pathFor 'about'}}">About</a></li>
+        </ul>
+    </div>
+
+    <div class="clickable" id="profileToggle">Profile</div>
+
+    <div id="profile">
+
+        {{#if currentUser}}
+
+            {{> profileSignedIn}}
+
+        {{else}}
+
+            {{> profileSignedOut}}
+
+        {{/if}}
+
+    </div>
+
+</template>

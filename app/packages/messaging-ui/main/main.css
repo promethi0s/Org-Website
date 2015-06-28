@@ -1,0 +1,52 @@
+span {
+    display: block;
+}
+
+#usersList {
+    border: white solid 1px;
+    position: absolute;
+    font-size: 80%;
+    width: 99%;
+    height: 11%;
+    overflow-y: auto;
+}
+
+#roomSelector {
+    position: absolute;
+    border: red solid 1px;
+    background: rgba(255, 0, 0, 0.3);
+    color: black;
+    font-size: 70%;
+    text-align: center;
+    width: 99%;
+    height: 2%;
+    top: 12%;
+}
+
+#chatDropdown {
+    position: absolute;
+    border: red solid 1px;
+    background: black;
+    color: white;
+    font-size: 70%;
+    display: none;
+    width: 99%;
+    top: 14%;
+    z-index: 1000;
+}
+
+#messagesContent {
+    border: white solid 1px;
+    position: absolute;
+    width: 99%;
+    height: 81%;
+    top: 15%;
+    overflow-y: auto;
+}
+
+#message {
+    position: absolute;
+    width: 97%;
+    left: 1%;
+    bottom: 0.5%;
+}

@@ -1,0 +1,9 @@
+#rightSidebarWidget {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    height: 98%;
+    width: 98%;
+}

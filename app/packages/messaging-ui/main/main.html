@@ -1,0 +1,51 @@
+<template name="messagingMain">
+
+    <div id="usersList">
+        {{#each users}}
+            {{#if status.online}}
+                <strong>{{profile.moniker}}:</strong> {{status.chatStatus}}<br>
+            {{/if}}
+        {{/each}}
+    </div>
+    <div class="roomToggle" id="roomSelector">Chat Settings</div>
+
+    <div class="chatSettings" id="chatDropdown">
+        <span>Room filter:</span>
+        <form class="activeRooms">
+            {{#each rooms}}
+                <label><input type="checkbox" id="{{this}}" checked={{isChecked this}}> {{capitalized this}} <br></label>
+            {{/each}}
+        </form>
+        <br>
+
+        <span>Set chat options:</span>
+        <form class="chatOptions">
+            <input type="text" id="chatStatus" placeholder="Chat Status"><br>
+            <input type="text" id="sendRoom" placeholder="Send Room"><br>
+            <input type="submit" class="hidden"><br>
+        </form>
+        <br>
+
+        <span>Create room:</span>
+        <form class="createRoom">
+            <input type="text" id="roomName" placeholder="Room Name" autocomplete="off"><br>
+            <input type="checkbox" id="roomRestricted" placeholder="Restricted">Restricted<br>
+            <div id="inviteList" class="hidden">
+                <span>Invite:</span>
+                {{#each users}}
+                    <label><input type="checkbox" id="{{_id}}"> {{profile.moniker}}<br></label>
+                {{/each}}
+            </div>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+
+    <div id="messagesContent">
+        {{#each messages}}
+            <strong>{{author}}:</strong> {{text}}<br>
+        {{/each}}
+    </div>
+
+    <form class="message"><input type="text" id="message" autocomplete="off" placeholder={{capitalized sendRoom}}></form>
+
+</template>
