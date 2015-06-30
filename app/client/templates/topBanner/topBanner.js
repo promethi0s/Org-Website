@@ -35,9 +35,11 @@ Template.topBanner.events({
 
 });
 
-$(document).click(function() {
-    $('#profile').hide()
-});
+Template.topBanner.rendered = function() {
+    $(document).click(function() {
+        $('#profile').hide()
+    });
+};
 
 var profileView;
 

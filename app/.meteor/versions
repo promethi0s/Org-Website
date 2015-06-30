@@ -41,9 +41,9 @@ mongo@1.1.0
 npm-bcrypt@0.7.8_2
 observe-sequence@1.0.6
 ordered-dict@1.0.3
+promethi0s:kommander@0.0.1
 promethi0s:links@0.0.1
 promethi0s:messaging@0.0.1
-promethi0s:messaging-ui@0.0.1
 promethi0s:ntp@0.0.1
 promethi0s:permissions@0.0.1
 random@1.0.3

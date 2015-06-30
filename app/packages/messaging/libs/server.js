@@ -22,6 +22,7 @@ Meteor.methods({
 
     createRoom: function(name, restricted, users, permanent) {
         if (Permissions.getPermission(this.userId, 'createRoom')) {
+            name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
             Rooms.insert({
                 _id: name,
                 restricted: restricted,
@@ -60,6 +61,12 @@ Meteor.methods({
         )
     }
 });
+
+Messaging = {};
+
+Messaging.initialized = function() {
+    return Rooms.find().count() != 0
+};
 
 Meteor.publish('messaging', function() {
     var availableRooms = Rooms.find(

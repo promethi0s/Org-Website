@@ -44,7 +44,7 @@ span {
     overflow-y: auto;
 }
 
-#message {
+#konsole {
     position: absolute;
     width: 97%;
     left: 1%;

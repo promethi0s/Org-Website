@@ -1,5 +1,4 @@
 Meteor.methods({
-
     // Account Methods
     createAccount: function( username, moniker, password, email ) {
         if (Meteor.users.findOne(
@@ -18,11 +17,8 @@ Meteor.methods({
             }
         });
 
-        Permissions.addUser(Meteor.users.findOne({username: username})['_id']);
+        if (Permissions.initialized()) Permissions.addUser(Meteor.users.findOne({username: username})['_id']);
 
-        Meteor.users.update(
-            {username: username},
-            {$set: {'status.chatStatus': 'Online'}}
-        )
+        if (Messaging.initialized()) Meteor.users.update({username: username}, {$set: {'status.chatStatus': 'Online'}})
     }
 });

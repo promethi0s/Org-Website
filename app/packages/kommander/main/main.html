@@ -1,4 +1,4 @@
-<template name="messagingMain">
+<template name="kommanderMain">
 
     <div id="usersList">
         {{#each users}}
@@ -13,7 +13,7 @@
         <span>Room filter:</span>
         <form class="activeRooms">
             {{#each rooms}}
-                <label><input type="checkbox" id="{{this}}" checked={{isChecked this}}> {{capitalized this}} <br></label>
+                <label><input type="checkbox" id="{{this}}" checked={{isChecked this}}> {{this}} <br></label>
             {{/each}}
         </form>
         <br>
@@ -42,10 +42,10 @@
 
     <div id="messagesContent">
         {{#each messages}}
-            <strong>{{author}}:</strong> {{text}}<br>
+            [{{origin}}][{{author}}]: {{text}}<br>
         {{/each}}
     </div>
 
-    <form class="message"><input type="text" id="message" autocomplete="off" placeholder={{capitalized sendRoom}}></form>
+    <input type="text" id="konsole" autocomplete="off" placeholder={{sendRoom}}>
 
 </template>

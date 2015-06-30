@@ -1,4 +1,48 @@
 Meteor.methods({
+    permissionsSetup: function() {
+        var superUserExists = Meteor.users.find({superUser: true}).count() != 0;
+
+        if (!superUserExists) {
+            GroupPermissions.insert({
+                _id: 'default',
+                permissions: {
+                    admin: false,
+                    assignGroup: 0
+                },
+                users: []
+            });
+
+            GroupPermissions.insert({
+                _id: 'admin',
+                permissions: {
+                    admin: true,
+                    assignGroup: 1
+                },
+                users: []
+            });
+
+            GroupPermissions.insert({
+                _id: 'superUser',
+                permissions: {
+                    admin: true,
+                    assignGroup: 2
+                },
+                users: []
+            });
+
+            Meteor.users.update(
+                {_id: this.userId},
+                {$set: {superUser: true}}
+            );
+
+            Permissions.assignGroup(this.userId, 'superUser');
+
+            Permissions.log('admin', 'Permissions: Super User created, id: ' + this.userId + '.')
+        } else {
+            Permissions.log('admin', 'Permissions: ' + this.userId + ' attempting to gain Super User access.')
+        }
+    },
+
     getClientPermissions: function(target) {
         if (Meteor.users.find({_id: this.userId}, {superUser: 1})) {
             return Meteor.users.find({ _id: target }, { permissions: 1 })
@@ -54,57 +98,12 @@ Meteor.methods({
 
 Permissions = {};
 
-Permissions.permissionsSetup = function(target) {
-
-    var superUserExists = Meteor.users.find({superUser: true}).count() != 0;
-
-    if (!superUserExists) {
-        GroupPermissions.insert({
-            _id: 'default',
-            permissions: {
-                admin: false,
-                assignGroup: 0
-            },
-            users: []
-        });
-
-        GroupPermissions.insert({
-            _id: 'admin',
-            permissions: {
-                admin: true,
-                assignGroup: 1
-            },
-            users: []
-        });
-
-        GroupPermissions.insert({
-            _id: 'superUser',
-            permissions: {
-                admin: true,
-                assignGroup: 2
-            },
-            users: []
-        });
-
-        Meteor.users.update(
-            {_id: target},
-            {$set: {superUser: true}}
-        );
-
-        Permissions.assignGroup(target, 'superUser');
-
-        Permissions.log('admin', 'Permissions: Super User created, id: ' + target + '.')
-    } else {
-        Permissions.log('admin', 'Permissions: ' + target + ' attempting to gain Super User access.')
-    }
+Permissions.initialized = function() {
+    return Meteor.users.find({superUser: true}).count() != 0
 };
 
 Permissions.addUser = function(target) {
-    if (Meteor.users.find({superUser: true}).count() == 0) {
-        Permissions.permissionsSetup(target)
-    } else {
-        Permissions.assignGroup(target, 'default')
-    }
+    Permissions.assignGroup(target, 'default')
 };
 
 Permissions.assignGroup = function(target, group) {
