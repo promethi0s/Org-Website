@@ -111,9 +111,7 @@ function submitUserInfo(t) {
         if (email != emailConfirm) errors.push('Emails must match!');
 
         if (errors.length != 0) {
-
             $('#userInfoPrompt').html(errors.join('<br>'));
-
         } else {
 
             Meteor.call('createAccount', username, moniker, password, email, function(error) {

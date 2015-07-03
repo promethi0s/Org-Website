@@ -1,8 +1,6 @@
 Meteor.methods({
-    permissionsSetup: function() {
-        var superUserExists = Meteor.users.find({superUser: true}).count() != 0;
-
-        if (!superUserExists) {
+    setupPermissions: function() {
+        if (!Permissions.initialized()) {
             GroupPermissions.insert({
                 _id: 'default',
                 permissions: {
@@ -24,33 +22,23 @@ Meteor.methods({
             GroupPermissions.insert({
                 _id: 'superUser',
                 permissions: {
+                    superUser: true,
                     admin: true,
                     assignGroup: 2
                 },
                 users: []
             });
-
-            Meteor.users.update(
-                {_id: this.userId},
-                {$set: {superUser: true}}
-            );
-
-            Permissions.assignGroup(this.userId, 'superUser');
-
-            Permissions.log('admin', 'Permissions: Super User created, id: ' + this.userId + '.')
-        } else {
-            Permissions.log('admin', 'Permissions: ' + this.userId + ' attempting to gain Super User access.')
         }
     },
 
     getClientPermissions: function(target) {
-        if (Meteor.users.find({_id: this.userId}, {superUser: 1})) {
+        if (Permissions.getPermission(this.userId, 'superUser')) {
             return Meteor.users.find({ _id: target }, { permissions: 1 })
         }
     },
 
     setClientPermissions: function(target, permissions) {
-        if (Meteor.users.find({_id: this.userId}, {superUser: 1})) {
+        if (Permissions.getPermission(this.userId, 'superUser')) {
             Meteor.users.update(
                 { _id: target },
                 {$set: { permissions: permissions }}
@@ -65,7 +53,7 @@ Meteor.methods({
     },
 
     setGroupPermissions: function(group, permissions) {
-        if (Meteor.users.find({_id: this.userId}, {superUser: 1})) {
+        if (Permissions.getPermission(this.userId, 'superUser')) {
             GroupPermissions.update(
                 { _id: group },
                 { $set: { permissions: permissions }}
@@ -74,7 +62,7 @@ Meteor.methods({
     },
 
     createGroup: function(group) {
-        if (Meteor.users.find({_id: this.userId}, {superUser: 1})) {
+        if (Permissions.getPermission(this.userId, 'superUser')) {
             GroupPermissions.insert(
                 {_id: group},
                 {$set: {permissions: Permissions.getGroupPermissions('default')}}
@@ -90,16 +78,31 @@ Meteor.methods({
 
     assignGroup: function(target, group) {
         if ((Permissions.getPermission(this.userId, 'admin') && Permissions.hasHigherPower(this.userId, target, 'assignGroup')) ||
-            Meteor.users.find({_id: this.userId}, {superUser: 1})) {
+            Permissions.getPermission(this.userId, 'superUser')) {
                 Permissions.assignGroup(target, group)
         }
+    },
+
+    setAsSuperUser: function() {
+        var superUserExists = Meteor.users.find({'permissions.superUser': true}).count() != 0;
+
+        if (!superUserExists) {
+            Permissions.assignGroup(this.userId, 'superUser');
+            Permissions.log('admin', 'Permissions: Super User created, id: ' + this.userId + '.')
+        } else {
+            Permissions.log('admin', 'Permissions: ' + this.userId + ' attempting to gain Super User access.')
+        }
+    },
+
+    permissionsTest: function() {
+        Permissions.resetGroup()
     }
 });
 
 Permissions = {};
 
 Permissions.initialized = function() {
-    return Meteor.users.find({superUser: true}).count() != 0
+    return GroupPermissions.find().count() != 0
 };
 
 Permissions.addUser = function(target) {
@@ -131,6 +134,12 @@ Permissions.addPermission = function(permissionName, defaultValue) {
         modifier,
         {multi: true}
     )
+};
+
+Permissions.resetGroup = function(group) {
+    if (group == undefined) {
+
+    }
 };
 
 Permissions.hasHigherPower = function(user, target, permission) {

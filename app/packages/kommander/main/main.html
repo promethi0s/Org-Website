@@ -42,7 +42,7 @@
 
     <div id="messagesContent">
         {{#each messages}}
-            [{{origin}}][{{author}}]: {{text}}<br>
+            <span {{color room}}>{{systemTrim room}}[{{author}}]: {{text}}</span><br>
         {{/each}}
     </div>
 

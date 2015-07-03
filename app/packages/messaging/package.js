@@ -11,8 +11,7 @@ Package.onUse(function(api) {
 
   api.use(['accounts-base', 'tracker', 'session', 'jquery', 'mongo', 'promethi0s:permissions', 'promethi0s:links']);
 
-  api.export('Messaging', ['client', 'server']);
-  api.export(['Messages', 'Rooms'], 'client');
+  api.export(['Messaging','Messages', 'Rooms'], ['client', 'server']);
 
   api.addFiles('libs/client.js', 'client');
   api.addFiles('libs/common.js', ['client', 'server']);

@@ -1,9 +1,5 @@
 Permissions = {};
 
-Permissions.setup = function() {
-    Meteor.call('permissionsSetup')
-};
-
 Permissions.getGroupPermissions = function(group) {
     Meteor.call('getGroupPermissions', group)
 };

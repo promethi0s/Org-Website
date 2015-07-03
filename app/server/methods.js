@@ -1,6 +1,6 @@
 Meteor.methods({
     // Account Methods
-    createAccount: function( username, moniker, password, email ) {
+    createAccount: function(username, moniker, password, email) {
         if (Meteor.users.findOne(
                 {$or: [
                     {username: username},
@@ -19,6 +19,6 @@ Meteor.methods({
 
         if (Permissions.initialized()) Permissions.addUser(Meteor.users.findOne({username: username})['_id']);
 
-        if (Messaging.initialized()) Meteor.users.update({username: username}, {$set: {'status.chatStatus': 'Online'}})
+        if (Messaging.initialized()) Meteor.users.update({username: username}, {$set: {'chat.chatStatus': 'Online', 'chat.defaultReceiveRooms': ['General'], 'chat.defaultSendRoom': 'General'}})
     }
 });

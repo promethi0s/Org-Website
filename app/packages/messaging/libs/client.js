@@ -12,10 +12,6 @@ Meteor.methods({
 
 Messaging = {};
 
-Messaging.setup = function() {
-    Meteor.call('messagingSetup')
-};
-
 Messaging.createRoom = function(name, restricted, users, permanent) {
     Meteor.call('createRoom', name, restricted, users, permanent)
 };

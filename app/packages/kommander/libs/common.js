@@ -1,2 +1,1 @@
-Kommands = Mongo.Collection('kommands');
-Konsole = Mongo.Collection('konsole');
+Kommands = new Mongo.Collection('kommands');

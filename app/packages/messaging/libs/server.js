@@ -3,14 +3,14 @@
  */
 
 Meteor.methods({
-    messagingSetup: function() {
-        if (Rooms.find().count() == 0) {
+    setupMessaging: function() {
+        if (!Messaging.initialized()) {
             Permissions.addPermission('createRoom', true);
             Permissions.addPermission('createPermanentRoom', false);
             Permissions.addPermission('modifyRoom', 0);
 
             Rooms.insert({
-                _id: 'general',
+                _id: 'General',
                 restricted: false,
                 users: [],
                 moderators: [],
@@ -57,7 +57,7 @@ Meteor.methods({
     setChatStatus: function (text) {
         Meteor.users.update(
             {_id: Meteor.userId()},
-            {$set: {'status.chatStatus': text}}
+            {$set: {'chat.chatStatus': text}}
         )
     }
 });
@@ -89,7 +89,7 @@ Meteor.publish('messaging', function() {
             _id: 1,
             'profile.moniker': 1,
             'status.online': 1,
-            'status.chatStatus': 1
+            'chat.chatStatus': 1
         }}
     )
     ]
