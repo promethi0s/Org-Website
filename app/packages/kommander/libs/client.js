@@ -5,8 +5,12 @@ Kommander.callKommand = function(_id, parameters) {
     Meteor.call(method, parameters)
 };
 
+Kommander.addShortcut = function(shortcut, kommand) {
+    Meteor.call('kommanderAddShortcut', shortcut, kommand)
+};
+
 Kommander.setup = function() {
-    Meteor.call('setupPermissions');
-    Meteor.call('setupMessaging');
-    Meteor.call('setupKommander')
+    Meteor.call('permissionsSetup');
+    Meteor.call('messagingSetup');
+    Meteor.call('kommanderSetup')
 };

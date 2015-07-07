@@ -20,7 +20,7 @@ Template.kommanderMain.helpers({
     },
 
     color: function(room) {
-        return {color: Session.get('roomColors')[room]}
+        return {style: 'color:' + Session.get('roomColors')[room]}
     },
 
     systemTrim: function(room) {
@@ -43,10 +43,13 @@ Template.kommanderMain.events = {
     },
 
     'keydown #konsole': function(e, t) {
-        var konsole = t.find('#konsole'),
-            kommand = konsole.value;
-        if (kommand.charAt(0) == '/' && kommand.charAt(konsole.length - 1) == ' ') {
-            setMode(kommand)
+        var kommand = t.find('#konsole').value;
+        if (e.keyCode == 32) {
+            if (kommand.charAt(0) == '/') {
+                performKommand(kommand.slice(1))
+            } else if (Session.get('kommandMode')) {
+                continueKommand(kommand)
+            }
         }
     },
 
@@ -107,25 +110,33 @@ Template.kommanderMain.events = {
 };
 
 Template.kommanderMain.rendered = function() {
-    document.oncontextmenu = function() {return false};
-
-    $(document).click(function() {
-        $('#chatDropdown').hide()
-    });
-
-    $(document).keydown(function(e) {
+    $(document).bind("contextmenu", function(e) {
+        e.preventDefault();
+    }).mousedown(function(e) {
+        $('#chatDropdown').hide();
+        var contextMenu = $("div.context-menu");
+        if (e.button != 2 && !$(e.target).is(".context-menu") || contextMenu.is(':visible')) {
+            contextMenu.hide();
+        }
+        if (e.button == 2) {
+            $("<div class='context-menu'>Context</div>").appendTo("body").css({
+                top: e.pageY + "px",
+                left: e.pageX + "px"
+            })
+        }
+    }).keydown(function(e) {
         var konsole = $('#konsole');
         if (e.keyCode == 13) {
             e.preventDefault();
             if (konsole.is(':focus')) {
-                var kommand = konsole.value,
+                var kommand = konsole.val(),
                     sendRoom = Session.get('sendRoom'),
                     receiveRooms = Session.get('receiveRooms');
-                if (kommand.charAt(0) == '/') {
-                    performKommand(kommand.substring(1));
-                } else if (Session.get('kommandMode')) {
-                    completeKommand(kommand)
-                } else if (kommand != '') {
+                if (kommand == '') {
+                    konsole.blur()
+                } else if (kommand.charAt(0) == '/' || Session.get('kommandMode')) {
+                    performKommand(kommand)
+                } else {
                     if (receiveRooms.indexOf(sendRoom) < 0) {
                         receiveRooms.push(sendRoom);
                         Session.set('receiveRooms', receiveRooms)
@@ -149,100 +160,36 @@ Template.kommanderMain.rendered = function() {
         }
     });
 
-    $('#usersList').mousedown(function(e) {
-        if (e.button == 2) {}
-    });
-
     Session.set('kommands', Kommands.find({}).map(function(kommand) {return kommand._id}))
 };
 
-setMode = function(kommand) {
+performKommand = function(kommand) {
     kommand = kommand.toLowerCase();
 
-    switch (kommand) {
-        case 'r':
-            kommand = 'reply';
-            break;
-        case 'g':
-            kommand = 'general';
-            break;
-        case 'w':
-            kommand = 'whisper';
-            break
+    var shortcut = KommandShortcuts.findOne({_id: kommand});
+    if (shortcut) {
+        kommand = shortcut.kommand
     }
 
-    if (kommandModes.indexOf(kommand) > -1) {
+    var toPerform = Kommands.findOne({_id: kommand}),
+        roomName = kommand.charAt(0).toUpperCase() + kommand.slice(1),
+        konsole = $('#konsole');
+    if (toPerform) {
         Session.set('kommandMode', kommand);
-        var konsole = $('#konsole');
-        konsole.val('');
-        switch (kommand) {
-            case 'join':
-                konsole.attr('placeholder', 'Room');
-                break;
-            case 'leave':
-                konsole.attr('placeholder', 'Room');
-                break;
-            case 'invite':
-                konsole.attr('placeholder', 'User');
-                break;
-            case 'kick':
-                konsole.attr('placeholder', 'User');
-                break;
-            case 'send':
-                konsole.attr('placeholder', 'Room');
-                break;
-            case 'whisper':
-                konsole.attr('placeholder', 'User');
-                break;
-            case 'status':
-                konsole.attr('placeholder', 'Status');
-                break;
-            case 'setup':
-                konsole.attr('placeholder', 'App');
-                break
-        }
+        Session.set('maxParam', toPerform.prompts.length);
+        Session.set('params', []);
+        konsole.attr('value', '');
+        konsole.attr('placeholder', toPerform.prompts[0]);
+    } else if (Session.get('receiveRooms').indexOf(roomName) > -1) {
+        Session.set('sendRoom', roomName);
+        konsole.val('')
     }
 };
 
-performKommand = function(kommand) {
-    if (Session.get('kommands').indexOf(kommand) > -1) {
-        switch (kommand) {
-            case 'help':
-                break;
-            case 'reply':
-                break
-        }
-    } else if (Session.get('rooms').indexOf(kommand) > -1) {
-        Session.set('sendRoom', kommand);
-        return true
-    }
-};
-
-completeKommand = function(kommand) {
+continueKommand = function(kommand) {
     kommand = kommand.toLowerCase();
     var rooms = Session.get('receiveRooms');
     switch (Session.get('kommandMode')) {
-        case 'join':
-            rooms.push(kommand);
-            Session.set('receiveRooms', rooms);
-            break;
-        case 'leave':
-            if (kommand != 'general') {
-                rooms.splice(kommand);
-                Session.set('receiveRooms', rooms)
-            }
-            break;
-        case 'invite':
-            break;
-        case 'kick':
-            break;
-        case 'send':
-            break;
-        case 'status':
-            break;
-        case 'setup':
-            Kommander.setup(kommand);
-            break;
     }
     resetKonsole()
 };
@@ -259,6 +206,7 @@ Meteor.subscribe('messaging');
 Session.set('receiveRooms', ['General']);
 Session.set('sendRoom', 'General');
 Session.set('inviteList', []);
+Session.set('roomColors', []);
 Session.set('messages',
     Messages.find(
         {room: {$in: Session.get('receiveRooms')}},

@@ -3,7 +3,7 @@
  */
 
 Meteor.methods({
-    setupMessaging: function() {
+    messagingSetup: function() {
         if (!Messaging.initialized()) {
             Permissions.addPermission('createRoom', true);
             Permissions.addPermission('createPermanentRoom', false);

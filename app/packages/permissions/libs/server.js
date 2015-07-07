@@ -1,5 +1,5 @@
 Meteor.methods({
-    setupPermissions: function() {
+    permissionsSetup: function() {
         if (!Permissions.initialized()) {
             GroupPermissions.insert({
                 _id: 'default',
